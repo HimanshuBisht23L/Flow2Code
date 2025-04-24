@@ -1,7 +1,7 @@
 import React from 'react'
 import '../styles/Navbar.css'
 
-export default function Navbar({ setSelectedShape, setShape, sendFlowBackend }) {
+export default function Navbar({ setSelectedShape, setShape, sendFlowBackend, setpressdelete }) {
     return (
         <>
             <nav className='h-[9vh] bg-[#f0f0f0] flex justify-between items-center pl-[2rem] pr-[4rem]'>
@@ -15,7 +15,8 @@ export default function Navbar({ setSelectedShape, setShape, sendFlowBackend }) 
                         <li className=' text-green-600 cursor-pointer hover:scale-[1.05] active:scale-[0.99] hover:transition-transform duration-300 ease-in-out ' onClick={() => { setSelectedShape(true); setShape("hexagon") }}>hexagon</li>
                     </ul>
                 </div>
-                <div>
+                <div className='flex gap-[2rem]'>
+                    <button onClick={()=> setpressdelete(true)} className='cursor-pointer text-blue-500 hover:scale-[1.05] active:scale-[0.99] hover:transition-transform duration-300 ease-in-out'>Delete</button>
                     <button onClick={sendFlowBackend} className='cursor-pointer text-blue-500 hover:scale-[1.05] active:scale-[0.99] hover:transition-transform duration-300 ease-in-out'>🚀 Get Code</button>
                 </div>
             </nav>

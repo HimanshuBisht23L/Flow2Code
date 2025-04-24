@@ -19,13 +19,13 @@
     border-radius: 50%;
 }
 
-.react-flow__node .react-flow__handle{
+.react-flow__node .react-flow__handle {
     background: #c3c3c3cf;
     transition: opacity .5s ease-in-out;
     opacity: 0;
 }
 
-.react-flow__node:hover .react-flow__handle{
+.react-flow__node:hover .react-flow__handle {
     opacity: 1;
 }
 
@@ -69,6 +69,13 @@
     transform: skewX(333deg);
 }
 
+.parallelogram .data{
+    transform: skewX(-333deg);
+}
+
+.parallelogram .node-input{
+    transform: skewX(-333deg);
+}
 
 .hexagon {
     clip-path: polygon(15% -5%, 85% -5%, 102% 50%, 85% 104%, 15% 110%, -2% 50%);
@@ -76,6 +83,7 @@
     min-width: 20rem;
     min-height: 3.5rem;
     text-wrap: nowrap;
+    padding: 1rem 2rem;
 }
 
 .diamond {
@@ -92,7 +100,23 @@
     aspect-ratio: 1/1;
 }
 
-.diamond div {
+.diamond .data {
     transform: rotate(45deg)
 }
 
+.AddBorder {
+    border: 2px solid lightgreen;
+}
+
+.diamond .node-input{
+    transform: rotate(45deg);
+}
+
+.node-input{
+    width: 6rem;
+    font-size: 14px;
+    padding: 4px;
+    outline: none;
+    background: transparent;
+    text-align: center;
+}

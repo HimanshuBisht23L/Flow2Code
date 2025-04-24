@@ -26,6 +26,10 @@ export default function Projectpage() {
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
     const [selectedshape, setSelectedShape] = useState(false)
     const [shape, setshape] = useState("")
+    const [pressdelete, setpressdelete] = useState(false)
+    const [nodeSelect, setnodeSelect] = useState(null)
+
+    const [editingNode, setEditingNode] = useState(null);
 
     const onConnect = useCallback(
         (params) => {
@@ -60,7 +64,7 @@ export default function Projectpage() {
                 x: position.x,
                 y: position.y,
             },
-            data: { label: `Node ${i}`, shape: shape },
+            data: { label: `Node ${i}`, shape: shape, id: i.toString() },
             type: "custom"
         };
 
@@ -86,8 +90,31 @@ export default function Projectpage() {
                     <Handle style={data.shape === "diamond" ? { right: "-19%" } : {}} type="source" position={Position.Right} id="r-source" isConnectableStart={true} isConnectableEnd={false} />
                     <Handle style={data.shape === "diamond" ? { right: "-19%" } : {}} type="target" position={Position.Right} id="r-target" isConnectableStart={false} isConnectableEnd={true} />
 
-                    <div className={`custom-node ${data.shape}`}>
-                        <div className='data'>{data.label}</div>
+                    <div className={`${nodeSelect === data.id ? 'AddBorder' : ''} custom-node ${data.shape}`}>
+                        {
+                            editingNode === data.id ? (
+                                <input autoFocus type="text" value={data.label} className='node-input' onChange={(e) => {
+                                    
+                                    const newinsideData = e.target.value;
+                                    setNodes((prev) =>
+                                        prev.map((node) =>
+                                            node.id === data.id
+                                                ? { ...node, data: { ...node.data, label: newinsideData } }
+                                                : node
+                                        )
+                                    );                                    
+
+                                }}
+                                    onKeyDown={(e) => {
+                                        if (e.key == "Enter") { setEditingNode(null) }
+                                    }}
+
+                                />
+                            ) : (
+                                <div className='data'>{data.label}</div>
+                            )
+                        }
+
                     </div>
                 </>
             );
@@ -95,89 +122,77 @@ export default function Projectpage() {
     }
 
 
-    // Add label/data to node
-    const onNodeClick = useCallback(
+    const onDoubleClick = useCallback(
         (event, node) => {
             event.stopPropagation(); //stop bubbling
-
-            const newLabel = prompt('Enter new label for this node:', node.data.label);
-            if (newLabel !== null) {
-                setNodes((prev) =>
-                    prev.map((n) =>
-                        n.id === node.id ? { ...n, data: { ...n.data, label: newLabel } } : n
-                    )
-                );
-            }
-        },
-        [setNodes]
-    );
-
-
-    // delete edge
-    const EdgeDelete = useCallback(
-        (edgesToRemove) => setEdges((eds) => eds.filter((edge) => !edgesToRemove.includes(edge))),
-        [setEdges]
-    );
-
+            setEditingNode(node.id)
+        }
+    )
 
     useEffect(() => {
-        const handleKeyDown = (event) => {
-            if (event.key === 'Delete') {
-                const selectedNodeIds = [];
-                const newNodes = [];
-                for (let i = 0; i < nodes.length; i++) {
-                    if (nodes[i].selected) {
-                        selectedNodeIds.push(nodes[i].id);
-                    } else {
-                        newNodes.push(nodes[i]);
-                    }
-                }
+        if (!pressdelete) return;
 
-                const newEdges = [];
-                for (let i = 0; i < edges.length; i++) {
-                    const edge = edges[i];
-
-                    const isConnectedToDeletedNode =
-                        selectedNodeIds.includes(edge.source) ||
-                        selectedNodeIds.includes(edge.target);
-
-                    const isEdgeSelected = edge.selected === true;
-
-                    // not delete node which is not selected
-                    if (!isConnectedToDeletedNode && !isEdgeSelected) {
-                        newEdges.push(edge);
-                    }
-                }
-
-                setNodes(newNodes);
-                setEdges(newEdges);
+        const selectedNodeIds = [];
+        const newNodes = [];
+        for (let i = 0; i < nodes.length; i++) {
+            if (nodes[i].selected) {
+                selectedNodeIds.push(nodes[i].id);
+            } else {
+                newNodes.push(nodes[i]);
             }
-        };
+        }
 
-        document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [nodes, edges]);
+        const newEdges = [];
+        for (let i = 0; i < edges.length; i++) {
+            const e = edges[i];
+            const isSelected = e.selected;
+            const isConnected = selectedNodeIds.includes(e.source) || selectedNodeIds.includes(e.target);
+            if (!isSelected && !isConnected) {
+                newEdges.push(e);
+            }
+        }
+
+        setNodes(newNodes);
+        setEdges(newEdges);
+        setpressdelete(false);
+    }, [pressdelete]);
+
+
+    const NodeClicked = (event, node) => {
+        setnodeSelect(node.id);
+    };
 
 
     // Send Json data to backend
     const sendFlowBackend = async () => {
         const data = reteriveData();
-        // console.log(Datasend);
+
+        const nodeConnections = {};
+
+        // connection array
+        edges.forEach(edge => {
+            if (!nodeConnections[edge.source]) {
+                nodeConnections[edge.source] = [];
+            }
+            nodeConnections[edge.source].push(edge.target);
+        });
+
         const DataSend = data.map(({ id, data, position }) => ({
             id,
             label: data.label,
             shape: data.shape,
-            position
-
-        }))
+            position,
+            connections: nodeConnections[id] || []
+        }));
 
         try {
-            const res = await axios.post("http://localhost:3000/recieve", DataSend)
-            console.log(res)
-        } catch (Error) {
-            console.log("❌ Not Send SuccessFully")
+            const res = await axios.post("http://localhost:3000/recieve", DataSend);
+            console.log(res.data || "✅ Sent successfully");
+        } catch (error) {
+            console.log("❌ Not Sent Successfully", error.message);
         }
-    }
+    };
+
 
 
     const reteriveData = () => {
@@ -220,6 +235,7 @@ export default function Projectpage() {
                     setSelectedShape={setSelectedShape}
                     setShape={setshape}
                     sendFlowBackend={sendFlowBackend}
+                    setpressdelete={setpressdelete}
                 />
 
 
@@ -232,8 +248,8 @@ export default function Projectpage() {
                         onConnect={onConnect}
                         onPaneClick={makeNode}
                         nodeTypes={nodetype}
-                        onNodeClick={onNodeClick}
-                        onEdgesDelete={EdgeDelete}
+                        onNodeDoubleClick={onDoubleClick}
+                        onNodeClick={NodeClicked}
                     >
                         <MiniMap />
                         <Background variant='plain' />
