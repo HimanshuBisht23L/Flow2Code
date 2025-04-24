@@ -19,6 +19,15 @@
     border-radius: 50%;
 }
 
+.react-flow__node .react-flow__handle{
+    background: #c3c3c3cf;
+    transition: opacity .5s ease-in-out;
+    opacity: 0;
+}
+
+.react-flow__node:hover .react-flow__handle{
+    opacity: 1;
+}
 
 .circle {
     background: rgba(181, 181, 190, 0.45);
@@ -86,3 +95,4 @@
 .diamond div {
     transform: rotate(45deg)
 }
+

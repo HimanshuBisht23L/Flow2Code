@@ -1,7 +1,9 @@
 import { Background, Controls, Handle, MarkerType } from '@xyflow/react'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import '../styles/Projectpage.css'
 import '@xyflow/react/dist/style.css';
+import Navbar from './Navbar.jsx';
+
 import {
     MiniMap,
     ReactFlow,
@@ -39,7 +41,6 @@ export default function Projectpage() {
         },
         [setEdges]
     );
-
 
     const makeNode = useCallback((event) => {
 
@@ -94,6 +95,7 @@ export default function Projectpage() {
     }
 
 
+    // Add label/data to node
     const onNodeClick = useCallback(
         (event, node) => {
             event.stopPropagation(); //stop bubbling
@@ -110,13 +112,61 @@ export default function Projectpage() {
         [setNodes]
     );
 
+
+    // delete edge
+    const EdgeDelete = useCallback(
+        (edgesToRemove) => setEdges((eds) => eds.filter((edge) => !edgesToRemove.includes(edge))),
+        [setEdges]
+    );
+
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Delete') {
+                const selectedNodeIds = [];
+                const newNodes = [];
+                for (let i = 0; i < nodes.length; i++) {
+                    if (nodes[i].selected) {
+                        selectedNodeIds.push(nodes[i].id);
+                    } else {
+                        newNodes.push(nodes[i]);
+                    }
+                }
+
+                const newEdges = [];
+                for (let i = 0; i < edges.length; i++) {
+                    const edge = edges[i];
+
+                    const isConnectedToDeletedNode =
+                        selectedNodeIds.includes(edge.source) ||
+                        selectedNodeIds.includes(edge.target);
+
+                    const isEdgeSelected = edge.selected === true;
+
+                    // not delete node which is not selected
+                    if (!isConnectedToDeletedNode && !isEdgeSelected) {
+                        newEdges.push(edge);
+                    }
+                }
+
+                setNodes(newNodes);
+                setEdges(newEdges);
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [nodes, edges]);
+
+
+    // Send Json data to backend
     const sendFlowBackend = async () => {
         const data = reteriveData();
         // console.log(Datasend);
-        const DataSend = data.map(({id, data, position})=> ({
+        const DataSend = data.map(({ id, data, position }) => ({
             id,
-            label :  data.label,
-            shape : data.shape,
+            label: data.label,
+            shape: data.shape,
             position
 
         }))
@@ -131,19 +181,19 @@ export default function Projectpage() {
 
 
     const reteriveData = () => {
-        const nodeMap = Object.fromEntries(nodes.map((node)=> [node.id, node]));  // node object created
+        const nodeMap = Object.fromEntries(nodes.map((node) => [node.id, node]));  // node object created
         const incommingMapEdge = {}
-        edges.forEach((edge)=>{
+        edges.forEach((edge) => {
             incommingMapEdge[edge.target] = (incommingMapEdge[edge.target] || 0) + 1;
         })
 
-        const startNodes = nodes.filter((node)=> !incommingMapEdge[node.id])
-        
+        const startNodes = nodes.filter((node) => !incommingMapEdge[node.id])
+
 
         const New_Data = []
         const visited = [];
-        const DFS = (start)=>{
-            if(visited[start]){
+        const DFS = (start) => {
+            if (visited[start]) {
                 return
             }
 
@@ -157,7 +207,7 @@ export default function Projectpage() {
             }
         }
 
-        startNodes.forEach((node)=> DFS(node.id));
+        startNodes.forEach((node) => DFS(node.id));
         return New_Data;
     }
 
@@ -166,21 +216,12 @@ export default function Projectpage() {
         <>
 
             <div>
-                <nav className='h-[9vh] bg-[#f0f0f0] flex justify-between items-center pl-[2rem] pr-[4rem]'>
-                    <div className='flex gap-[1.5rem]'>
-                        <strong>Select Shape : </strong>
-                        <ul className='list-none flex gap-[3rem]'>
-                            <li className=' text-green-600 cursor-pointer hover:scale-[1.05] active:scale-[0.99] hover:transition-transform duration-300 ease-in-out ' onClick={() => { setSelectedShape(true); setshape("circle") }}>Circle</li>
-                            <li className=' text-green-600 cursor-pointer hover:scale-[1.05] active:scale-[0.99] hover:transition-transform duration-300 ease-in-out ' onClick={() => { setSelectedShape(true); setshape("rectangle") }}>Rectangle</li>
-                            <li className=' text-green-600 cursor-pointer hover:scale-[1.05] active:scale-[0.99] hover:transition-transform duration-300 ease-in-out ' onClick={() => { setSelectedShape(true); setshape("parallelogram") }}>Parallelogram</li>
-                            <li className=' text-green-600 cursor-pointer hover:scale-[1.05] active:scale-[0.99] hover:transition-transform duration-300 ease-in-out ' onClick={() => { setSelectedShape(true); setshape("diamond") }}>Diamond</li>
-                            <li className=' text-green-600 cursor-pointer hover:scale-[1.05] active:scale-[0.99] hover:transition-transform duration-300 ease-in-out ' onClick={() => { setSelectedShape(true); setshape("hexagon") }}>hexagon</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <button onClick={sendFlowBackend} className='cursor-pointer text-blue-500 hover:scale-[1.05] active:scale-[0.99] hover:transition-transform duration-300 ease-in-out'>🚀 Get Code</button>
-                    </div>
-                </nav>
+                <Navbar
+                    setSelectedShape={setSelectedShape}
+                    setShape={setshape}
+                    sendFlowBackend={sendFlowBackend}
+                />
+
 
                 <div style={{ width: "100%", height: "91vh", padding: "1px" }} >
                     <ReactFlow
@@ -192,6 +233,7 @@ export default function Projectpage() {
                         onPaneClick={makeNode}
                         nodeTypes={nodetype}
                         onNodeClick={onNodeClick}
+                        onEdgesDelete={EdgeDelete}
                     >
                         <MiniMap />
                         <Background variant='plain' />
@@ -203,44 +245,3 @@ export default function Projectpage() {
     )
 }
 
-
-
-
-// const nodetype = {
-//     custom: ({ data }) => {
-//         return (
-//             <div className={`custom-node ${data.shape}`}>
-//                 <div className="dot">
-//                     <Handle style={data.shape === "diamond" ? { top: "-22%", left: "47%" } : {}} type="source" position={Position.Top} id="t-source" />
-//                     <Handle style={data.shape === "diamond" ? { top: "-22%", left: "47%" } : {}} type="target" position={Position.Top} id="t-target" />
-
-//                     <Handle style={data.shape === "diamond" ? { left: "-22%", top: "47%" } : {}} type="source" position={Position.Left} id="l-source" />
-//                     <Handle style={data.shape === "diamond" ? { left: "-22%", top: "47%" } : {}} type="target" position={Position.Left} id="l-target" />
-
-//                     <Handle style={data.shape === "diamond" ? { bottom: "-22%", left: "47%" } : {}} type="source" position={Position.Bottom} id="b-source" />
-//                     <Handle style={data.shape === "diamond" ? { bottom: "-22%", left: "47%" } : {}} type="target" position={Position.Bottom} id="b-target" />
-
-//                     <Handle style={data.shape === "diamond" ? { right: "-22%", top: "47%" } : {}} type="source" position={Position.Right} id="r-source" />
-//                     <Handle style={data.shape === "diamond" ? { right: "-22%", top: "47%" } : {}} type="target" position={Position.Right} id="r-target" />
-//                 </div>
-
-//                 <div className='data'>{data.label}</div>
-//             </div>
-//         );
-//     }
-// }
-
-
-
-
-// const initialNodes = [
-//     { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
-//     { id: '2', position: { x: 0, y: 100 }, data: { label: '2' } },
-// ];
-// const initialEdges = [{
-//     id: 'e1-2', type: "step", source: '1', target: '2',
-//     markerEnd: {
-//         type: MarkerType.Arrow
-//     },
-//     style: { stroke: "Blue" }
-// }];
