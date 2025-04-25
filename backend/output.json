@@ -1,0 +1,95 @@
+[
+  {
+    "id": "1",
+    "label": "Start",
+    "shape": "circle",
+    "position": {
+      "x": 949,
+      "y": 2
+    },
+    "connections": [
+      "3"
+    ]
+  },
+  {
+    "id": "3",
+    "label": "N = 0 and SUM = 0",
+    "shape": "rectangle",
+    "position": {
+      "x": 938,
+      "y": 185
+    },
+    "connections": [
+      "4"
+    ]
+  },
+  {
+    "id": "4",
+    "label": "N = N+1",
+    "shape": "rectangle",
+    "position": {
+      "x": 935,
+      "y": 296
+    },
+    "connections": [
+      "5"
+    ]
+  },
+  {
+    "id": "5",
+    "label": "SUM = SUM  + 1",
+    "shape": "rectangle",
+    "position": {
+      "x": 944,
+      "y": 427
+    },
+    "connections": [
+      "6"
+    ]
+  },
+  {
+    "id": "6",
+    "label": "Is N = 50?",
+    "shape": "diamond",
+    "position": {
+      "x": 1270,
+      "y": 393
+    },
+    "connections": [
+      "3",
+      "7"
+    ]
+  },
+  {
+    "id": "7",
+    "label": "Print SUM",
+    "shape": "rectangle",
+    "position": {
+      "x": 1457,
+      "y": 421
+    },
+    "connections": [
+      "8"
+    ]
+  },
+  {
+    "id": "8",
+    "label": "End",
+    "shape": "circle",
+    "position": {
+      "x": 1472,
+      "y": 250
+    },
+    "connections": []
+  },
+  {
+    "id": "2",
+    "label": "Node 2",
+    "shape": "circle",
+    "position": {
+      "x": 788,
+      "y": 724
+    },
+    "connections": []
+  }
+]
