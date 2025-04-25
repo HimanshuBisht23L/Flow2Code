@@ -27,7 +27,7 @@ const Hexagon = ({ size = 20, color = "currentColor" }) => (
 const tools = [
   { id: "hand", icon: <Hand size={18} /> },
   { id: "pointer", icon: <MousePointer size={18} /> },
-  { id: "rectangle", icon: <Square size={18} stroke="1" />, shape: true },
+  { id: "rectangle", icon: <Square size={18} />, shape: true },
   { id: "circle", icon: <Circle size={18} />, shape: true },
   { id: "parallelogram", icon: <Parallelogram />, shape: true },
   { id: "diamond", icon: <Diamond size={18} />, shape: true },
