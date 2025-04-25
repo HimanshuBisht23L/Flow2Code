@@ -33,8 +33,10 @@
     background: rgba(181, 181, 190, 0.45);
     padding: 1rem;
     display: flex;
-    min-height: 5rem;
-    min-width: 8rem;
+    /* /* min-height: 5rem; */
+    min-width: 10rem;
+    height: 100%;
+    width: auto;
     border-radius: 50%;
     justify-content: center;
     align-items: center;
@@ -46,8 +48,9 @@
     min-width: 10rem;
     padding: 0 1rem;
     border-radius: 10px;
-    width: auto;
+    height: 100%;
     min-height: 3.5rem;
+    width: auto;
     text-wrap: nowrap;
     display: flex;
     justify-content: center;
@@ -57,10 +60,11 @@
 
 .parallelogram {
     min-width: 10rem;
+    min-height: 3.5rem;
     padding: 0 1rem;
     border-radius: 5px;
+    height: 100%;
     width: auto;
-    min-height: 3.5rem;
     text-wrap: nowrap;
     display: flex;
     justify-content: center;
@@ -69,19 +73,21 @@
     transform: skewX(333deg);
 }
 
-.parallelogram .data{
+.parallelogram .data {
     transform: skewX(-333deg);
 }
 
-.parallelogram .node-input{
+.parallelogram .node-input {
     transform: skewX(-333deg);
 }
 
 .hexagon {
-    clip-path: polygon(15% -5%, 85% -5%, 102% 50%, 85% 104%, 15% 110%, -2% 50%);
+    clip-path: polygon(15% -5%, 85% -5%, 100% 50%, 85% 104%, 15% 110%, 0% 50%);
     background: rgba(181, 181, 190, 0.45);
     min-width: 20rem;
     min-height: 3.5rem;
+    height: 100%;
+    width: auto;
     text-wrap: nowrap;
     padding: 1rem 2rem;
 }
@@ -89,6 +95,8 @@
 .diamond {
     min-width: 6rem;
     min-height: 6rem;
+    height: 100%;
+    width: auto;
     padding: 0 1rem;
     border-radius: 5px;
     text-wrap: nowrap;
@@ -104,17 +112,17 @@
     transform: rotate(45deg)
 }
 
-.AddBorder {
-    border: 2px solid lightgreen;
+.react-flow__resize-control {
+    padding: 3px;
 }
 
-.diamond .node-input{
+.diamond .node-input {
     transform: rotate(45deg);
 }
 
-.node-input{
-    width: 6rem;
-    font-size: 14px;
+.node-input {
+    width: 4rem;
+    /* font-size: 14px; */
     padding: 4px;
     outline: none;
     background: transparent;

@@ -1,4 +1,4 @@
-import { Background, Controls, Handle, MarkerType } from '@xyflow/react'
+import { Background, Controls, Handle, MarkerType, NodeResizer } from '@xyflow/react'
 import React, { useCallback, useState, useEffect } from 'react'
 import '../styles/Projectpage.css'
 import '@xyflow/react/dist/style.css';
@@ -73,54 +73,63 @@ export default function Projectpage() {
         setNodes((prev) => [...prev, newnode]);
 
         setSelectedShape(false);
-        setshape("");           
-        setActiveTool("pointer");   
+        setshape("");
+        setActiveTool("pointer");
         i++
 
     }, [setNodes, shape, selectedshape])
 
 
     const nodetype = {
-        custom: ({ data }) => {
+        custom: ({ data, selected }) => {
             return (
                 <>
-                    <Handle style={data.shape === "diamond" ? { top: "-19%" } : {}} type="source" position={Position.Top} id="t-source" isConnectableStart={true} isConnectableEnd={false} />
-                    <Handle style={data.shape === "diamond" ? { top: "-19%" } : {}} type="target" position={Position.Top} id="t-target" isConnectableStart={false} isConnectableEnd={true} />
+                    <NodeResizer
+                        color="#7f56d9"
+                        isVisible={selected}
+                        minWidth={160}
+                        minHeight={50}
+                    />
 
-                    <Handle style={data.shape === "diamond" ? { left: "-19%" } : {}} type="source" position={Position.Left} id="l-source" isConnectableStart={true} isConnectableEnd={false} />
-                    <Handle style={data.shape === "diamond" ? { left: "-19%" } : {}} type="target" position={Position.Left} id="l-target" isConnectableStart={false} isConnectableEnd={true} />
+                    <div className={`${nodeSelect === data.id ? 'AddBorder' : ''} nowheel custom-node ${data.shape}`}>
 
-                    <Handle style={data.shape === "diamond" ? { bottom: "-19%" } : {}} type="source" position={Position.Bottom} id="b-source" isConnectableStart={true} isConnectableEnd={false} />
-                    <Handle style={data.shape === "diamond" ? { bottom: "-19%" } : {}} type="target" position={Position.Bottom} id="b-target" isConnectableStart={false} isConnectableEnd={true} />
+                        <Handle style={data.shape === "diamond" ? { top: "-19%" } : {}} type="source" position={Position.Top} id="t-source" isConnectableStart={true} isConnectableEnd={false} />
+                        <Handle style={data.shape === "diamond" ? { top: "-19%" } : {}} type="target" position={Position.Top} id="t-target" isConnectableStart={false} isConnectableEnd={true} />
 
-                    <Handle style={data.shape === "diamond" ? { right: "-19%" } : {}} type="source" position={Position.Right} id="r-source" isConnectableStart={true} isConnectableEnd={false} />
-                    <Handle style={data.shape === "diamond" ? { right: "-19%" } : {}} type="target" position={Position.Right} id="r-target" isConnectableStart={false} isConnectableEnd={true} />
+                        <Handle style={data.shape === "diamond" ? { left: "-19%" } : {}} type="source" position={Position.Left} id="l-source" isConnectableStart={true} isConnectableEnd={false} />
+                        <Handle style={data.shape === "diamond" ? { left: "-19%" } : {}} type="target" position={Position.Left} id="l-target" isConnectableStart={false} isConnectableEnd={true} />
 
-                    <div className={`${nodeSelect === data.id ? 'AddBorder' : ''} custom-node ${data.shape}`}>
+                        <Handle style={data.shape === "diamond" ? { bottom: "-19%" } : {}} type="source" position={Position.Bottom} id="b-source" isConnectableStart={true} isConnectableEnd={false} />
+                        <Handle style={data.shape === "diamond" ? { bottom: "-19%" } : {}} type="target" position={Position.Bottom} id="b-target" isConnectableStart={false} isConnectableEnd={true} />
+
+                        <Handle style={data.shape === "diamond" ? { right: "-19%" } : {}} type="source" position={Position.Right} id="r-source" isConnectableStart={true} isConnectableEnd={false} />
+                        <Handle style={data.shape === "diamond" ? { right: "-19%" } : {}} type="target" position={Position.Right} id="r-target" isConnectableStart={false} isConnectableEnd={true} />
+
                         {
                             editingNode === data.id ? (
-                                <input autoFocus type="text" value={data.label} className='node-input' onChange={(e) => {
-                                    
-                                    const newinsideData = e.target.value;
-                                    setNodes((prev) =>
-                                        prev.map((node) =>
-                                            node.id === data.id
-                                                ? { ...node, data: { ...node.data, label: newinsideData } }
-                                                : node
-                                        )
-                                    );                                    
-
-                                }}
-                                    onKeyDown={(e) => {
-                                        if (e.key == "Enter") { setEditingNode(null) }
+                                <input
+                                    autoFocus
+                                    type="text"
+                                    value={data.label}
+                                    className='node-input'
+                                    onChange={(e) => {
+                                        const newinsideData = e.target.value;
+                                        setNodes((prev) =>
+                                            prev.map((node) =>
+                                                node.id === data.id
+                                                    ? { ...node, data: { ...node.data, label: newinsideData } }
+                                                    : node
+                                            )
+                                        );
                                     }}
-
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") setEditingNode(null);
+                                    }}
                                 />
                             ) : (
                                 <div className='data'>{data.label}</div>
                             )
                         }
-
                     </div>
                 </>
             );
@@ -242,8 +251,8 @@ export default function Projectpage() {
                     setShape={setshape}
                     sendFlowBackend={sendFlowBackend}
                     setpressdelete={setpressdelete}
-                    setActiveTool={setActiveTool} 
-                    activeTool={activeTool} 
+                    setActiveTool={setActiveTool}
+                    activeTool={activeTool}
                 />
 
 
@@ -258,6 +267,7 @@ export default function Projectpage() {
                         nodeTypes={nodetype}
                         onNodeDoubleClick={onDoubleClick}
                         onNodeClick={NodeClicked}
+                        panOnDrag={activeTool !== "pointer"}
                     >
                         <MiniMap />
                         <Background variant='plain' />

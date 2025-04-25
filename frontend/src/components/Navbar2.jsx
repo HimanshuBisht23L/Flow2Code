@@ -4,7 +4,7 @@ import {
   DiamondIcon,
   Hold03Icon,
   Cursor02Icon,
-  CircleIcon,
+  OvalIcon,
   SquareIcon,
   HexagonIcon
 } from "hugeicons-react";
@@ -12,7 +12,7 @@ import {
 const tools = [
   { id: "hand", icon: <Hold03Icon color="#000" />, hold: true },
   { id: "pointer", icon: <Cursor02Icon color="#000" />, pointer: true },
-  { id: "circle", icon: <CircleIcon color="#000" />, shape: true },
+  { id: "circle", icon: <OvalIcon color="#000" />, shape: true },
   { id: "rectangle", icon: <SquareIcon color="#000" />, shape: true },
   { id: "parallelogram", icon: <ParallelogramIcon color="#000" />, shape: true },
   { id: "diamond", icon: <DiamondIcon color="#000" />, shape: true },
@@ -46,7 +46,7 @@ export default function MinimalToolbar({ setSelectedShape, setShape, sendFlowBac
             onClick={() => handleClick(tool)}
             className={`p-2 rounded-lg transition-all relative
           ${activeTool === tool.id
-                ? "bg-indigo-100 text-indigo-600"
+                ? "bg-indigo-200 text-indigo-600"
                 : "hover:bg-gray-100"}
             `}
           >
