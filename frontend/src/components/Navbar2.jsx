@@ -32,35 +32,46 @@ const tools = [
   { id: "parallelogram", icon: <Parallelogram />, shape: true },
   { id: "diamond", icon: <Diamond size={18} />, shape: true },
   { id: "hexagon", icon: <Hexagon />, shape: true },
-  { id: "eraser", icon: <Eraser size={18} /> },
+  { id: "eraser", icon: <Eraser size={18} />, eraser: true },
 ];
 
-export default function MinimalToolbar({ setSelectedShape, setShape, sendFlowBackend}) {
+export default function MinimalToolbar({ setSelectedShape, setShape, sendFlowBackend, setpressdelete, setpanbtn, setpointer }) {
   const [activeTool, setActiveTool] = useState("pointer");
 
   const handleClick = (tool) => {
+    setpointer(false)
     setActiveTool(tool.id);
     if (tool.shape) {
       setSelectedShape(true);
       setShape(tool.id);
     }
+    if (tool.eraser) {
+      setpressdelete(true);
+    }
   };
 
+
+
   return (
-    <div className="flex items-center gap-3 p-2.5 bg-white rounded-xl shadow border border-gray-200 w-fit mx-auto mt-4">
-      {tools.map((tool) => (
-        <button
-          key={tool.id}
-          onClick={() => handleClick(tool)}
-          className={`p-2 rounded-lg transition-all relative
-            ${activeTool === tool.id
-              ? "bg-indigo-100 text-indigo-600"
-              : "hover:bg-gray-100"}
-          `}
-        >
-          {tool.icon}
-        </button>
-      ))}
+    <div className="flex justify-between items-center mt-4">
+      <button className="hover:transform hover:scale-[1.05] active:scale-[0.98] transition-all duration-300 ease-in-out cursor-pointer self-start bg-amber-300 p-[.6rem] rounded-2xl ml-[1rem]" >HAMBurger</button>
+      <div className="flex items-center gap-3 p-2 bg-white rounded-xl shadow border border-gray-200 w-fit mx-auto ">
+        {tools.map((tool) => (
+          <button
+            key={tool.id}
+            onClick={() => handleClick(tool)}
+            className={`p-2 rounded-lg transition-all relative
+          ${activeTool === tool.id
+                ? "bg-indigo-100 text-indigo-600"
+                : "hover:bg-gray-100"}
+            `}
+          >
+            {tool.icon}
+          </button>
+        ))}
+      </div>
+      <button className="hover:transform hover:scale-[1.05] active:scale-[0.98] transition-all duration-300 ease-in-out cursor-pointer self-start bg-amber-300 p-[.6rem] rounded-2xl mr-[1rem]" onClick={sendFlowBackend}>Code</button>
     </div>
   );
 }
+
