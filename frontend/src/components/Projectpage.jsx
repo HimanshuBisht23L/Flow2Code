@@ -28,8 +28,8 @@ export default function Projectpage() {
     const [shape, setshape] = useState("")
     const [pressdelete, setpressdelete] = useState(false)
     const [nodeSelect, setnodeSelect] = useState(null)
-    const [panBtn, setpanbtn] = useState(false)
-    const [pointer, setpointer] = useState(true)
+    const [activeTool, setActiveTool] = useState("pointer");
+
 
     const [editingNode, setEditingNode] = useState(null);
 
@@ -71,6 +71,10 @@ export default function Projectpage() {
         };
 
         setNodes((prev) => [...prev, newnode]);
+
+        setSelectedShape(false);
+        setshape("");           
+        setActiveTool("pointer");   
         i++
 
     }, [setNodes, shape, selectedshape])
@@ -238,10 +242,8 @@ export default function Projectpage() {
                     setShape={setshape}
                     sendFlowBackend={sendFlowBackend}
                     setpressdelete={setpressdelete}
-                    setpanbtn={setpanbtn}
-                    setpointer={setpointer}
-
-
+                    setActiveTool={setActiveTool} 
+                    activeTool={activeTool} 
                 />
 
 

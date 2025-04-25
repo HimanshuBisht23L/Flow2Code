@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Hold03Icon,
   ParallelogramIcon,
