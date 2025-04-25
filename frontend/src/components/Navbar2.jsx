@@ -1,44 +1,29 @@
 import {
-  Hand,
-  MousePointer,
-  Square,
-  Circle,
-  Diamond,
-  Eraser,
-} from "lucide-react";
-
-// Custom Parallelogram Icon
-const Parallelogram = ({ size = 20, color = "currentColor" }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
-    stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="6 3 20 3 14 21 0 21" />
-  </svg>
-);
-
-// Custom Hexagon Icon
-const Hexagon = ({ size = 20, color = "currentColor" }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
-    stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="6 3 18 3 23 12 18 21 6 21 1 12" />
-  </svg>
-  
-);
+  EraserIcon,
+  ParallelogramIcon,
+  DiamondIcon,
+  Hold03Icon,
+  Cursor02Icon,
+  CircleIcon,
+  SquareIcon,
+  HexagonIcon
+} from "hugeicons-react";
 
 const tools = [
-  { id: "hand", icon: <Hand size={18} /> },
-  { id: "pointer", icon: <MousePointer size={18} /> },
-  { id: "rectangle", icon: <Square size={18} />, shape: true },
-  { id: "circle", icon: <Circle size={18} />, shape: true },
-  { id: "parallelogram", icon: <Parallelogram />, shape: true },
-  { id: "diamond", icon: <Diamond size={18} />, shape: true },
-  { id: "hexagon", icon: <Hexagon />, shape: true },
-  { id: "eraser", icon: <Eraser size={18} />, eraser: true },
+  { id: "hand", icon: <Hold03Icon color="#000" />, hold: true },
+  { id: "pointer", icon: <Cursor02Icon color="#000" />, pointer: true },
+  { id: "circle", icon: <CircleIcon color="#000" />, shape: true },
+  { id: "rectangle", icon: <SquareIcon color="#000" />, shape: true },
+  { id: "parallelogram", icon: <ParallelogramIcon color="#000" />, shape: true },
+  { id: "diamond", icon: <DiamondIcon color="#000" />, shape: true },
+  { id: "hexagon", icon: <HexagonIcon color="#000" />, shape: true },
+  { id: "eraser", icon: <EraserIcon color="#000" />, eraser: true },
 ];
 
 export default function MinimalToolbar({ setSelectedShape, setShape, sendFlowBackend, setpressdelete, setActiveTool, activeTool }) {
 
   const handleClick = (tool) => {
-    setActiveTool(tool.id);  
+    setActiveTool(tool.id);
 
     if (tool.shape) {
       setSelectedShape(true);

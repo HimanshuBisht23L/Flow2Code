@@ -37,7 +37,7 @@ export default function Projectpage() {
         (params) => {
             const styledEdge = {
                 ...params,
-                type: 'step',
+                type: 'smoothstep',
                 style: { stroke: 'black', strokeWidth: 1 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
