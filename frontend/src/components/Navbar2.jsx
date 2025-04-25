@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Hand,
   MousePointer,
@@ -22,12 +21,13 @@ const Hexagon = ({ size = 20, color = "currentColor" }) => (
     stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polygon points="6 3 18 3 23 12 18 21 6 21 1 12" />
   </svg>
+  
 );
 
 const tools = [
   { id: "hand", icon: <Hand size={18} /> },
   { id: "pointer", icon: <MousePointer size={18} /> },
-  { id: "rectangle", icon: <Square size={18} />, shape: true },
+  { id: "rectangle", icon: <Square size={18} stroke="1" />, shape: true },
   { id: "circle", icon: <Circle size={18} />, shape: true },
   { id: "parallelogram", icon: <Parallelogram />, shape: true },
   { id: "diamond", icon: <Diamond size={18} />, shape: true },
@@ -35,12 +35,11 @@ const tools = [
   { id: "eraser", icon: <Eraser size={18} />, eraser: true },
 ];
 
-export default function MinimalToolbar({ setSelectedShape, setShape, sendFlowBackend, setpressdelete, setpanbtn, setpointer }) {
-  const [activeTool, setActiveTool] = useState("pointer");
+export default function MinimalToolbar({ setSelectedShape, setShape, sendFlowBackend, setpressdelete, setActiveTool, activeTool }) {
 
   const handleClick = (tool) => {
-    setpointer(false)
-    setActiveTool(tool.id);
+    setActiveTool(tool.id);  
+
     if (tool.shape) {
       setSelectedShape(true);
       setShape(tool.id);
