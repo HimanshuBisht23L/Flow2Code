@@ -16,6 +16,7 @@ export default function Navbar({ setSelectedShape, setShape, sendFlowBackend, se
                     </ul>
                 </div>
                 <div className='flex gap-[2rem]'>
+                    <button className='cursor-pointer text-blue-500 hover:scale-[1.05] active:scale-[0.99] hover:transition-transform duration-300 ease-in-out'>Save Image</button>
                     <button onClick={()=> setpressdelete(true)} className='cursor-pointer text-blue-500 hover:scale-[1.05] active:scale-[0.99] hover:transition-transform duration-300 ease-in-out'>Delete</button>
                     <button onClick={sendFlowBackend} className='cursor-pointer text-blue-500 hover:scale-[1.05] active:scale-[0.99] hover:transition-transform duration-300 ease-in-out'>🚀 Get Code</button>
                 </div>
