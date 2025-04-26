@@ -7,7 +7,8 @@ import {
   OvalIcon,
   SquareIcon,
   HexagonIcon,
-  ArrowDownDoubleIcon
+  ArrowDownDoubleIcon,
+  ArrowUpDoubleIcon
 } from "hugeicons-react";
 
 const tools = [
@@ -25,7 +26,7 @@ const tools = [
 
 
 
-export default function MinimalToolbar({ setSelectedShape, setShape, sendFlowBackend, setIsEraserActive, setActiveTool, activeTool, setShowEditor }) {
+export default function MinimalToolbar({ setSelectedShape, setShape, sendFlowBackend, setIsEraserActive, setActiveTool, activeTool, setShowEditor, showEditor}) {
 
   const handleClick = (tool) => {
     setActiveTool(tool.id);
@@ -42,11 +43,10 @@ export default function MinimalToolbar({ setSelectedShape, setShape, sendFlowBac
   };
 
 
-  
-const editorCode = ()=>{
-  setShowEditor(true)
-  sendFlowBackend();
-}
+  const editorCode = () => {
+    setShowEditor(!showEditor)
+    sendFlowBackend();
+  }
 
 
   return (
@@ -67,7 +67,7 @@ const editorCode = ()=>{
           </button>
         ))}
       </div>
-      <button className="rotate-[90deg] z-999 hover:transform hover:scale-[1.05] hover:right-[-0%] active:scale-[0.98] transition-all duration-300 ease-in-out cursor-pointer self-start bg-amber-300 p-[.6rem] rounded-2xl absolute top-[45%] right-[-1%] pt-[1rem]" onClick={()=> editorCode()}><ArrowDownDoubleIcon  color="#000" /></button>
+      <button className="rotate-[90deg] z-999 hover:transform hover:scale-[1.05] hover:right-[-0%] active:scale-[0.98] transition-all duration-300 ease-in-out cursor-pointer self-start bg-amber-300 p-[.6rem] rounded-2xl absolute top-[45%] right-[-1%] pt-[1rem]" onClick={() => editorCode()}>{!showEditor ? <ArrowDownDoubleIcon color="#000" /> : <ArrowUpDoubleIcon color="#000" />}</button>
 
     </div>
   );

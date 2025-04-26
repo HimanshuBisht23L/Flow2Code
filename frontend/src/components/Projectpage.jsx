@@ -15,6 +15,7 @@ import {
     addEdge,
 } from '@xyflow/react';
 import axios from 'axios';
+import langs from '../../languages.json'
 
 
 let i = 1;
@@ -33,7 +34,7 @@ export default function Projectpage() {
     const [editingNode, setEditingNode] = useState(null);
     const [isEraserActive, setIsEraserActive] = useState(false);
     const [showEditor, setShowEditor] = useState(false);
-    const [selectedLang, setSelectedLang] = useState("javascript");
+    const [selectedLang, setSelectedLang] = useState("cpp");
 
 
 
@@ -241,7 +242,7 @@ export default function Projectpage() {
 
         const nodeConnections = {};
 
-        // connection array
+
         edges.forEach(edge => {
             if (!nodeConnections[edge.source]) {
                 nodeConnections[edge.source] = [];
@@ -249,13 +250,22 @@ export default function Projectpage() {
             nodeConnections[edge.source].push(edge.target);
         });
 
-        const DataSend = data.map(({ id, data, position }) => ({
+        const nodeDataArray = data.map(({ id, data, position }) => ({
             id,
             label: data.label,
             shape: data.shape,
             position,
             connections: nodeConnections[id] || []
         }));
+    
+    
+        const DataSend = {
+            data: nodeDataArray,
+            language: {
+                name: selectedLang === "cpp" ? "c++" : selectedLang
+            }
+        };
+        
 
         try {
             const res = await axios.post("http://localhost:3000/recieve", DataSend);
@@ -302,14 +312,8 @@ export default function Projectpage() {
 
     return (
         <>
-            {!selectedshape && (
-                <div className="absolute top-0 left-0 w-full h-screen bg-black/30  flex items-center justify-center">
-                    <p className="text-white text-xl font-semibold">Click a tool to get started</p>
-                </div>
-            )}
 
-
-            <div className='relative mainbody bg-[#aaaaaa61]'>
+            <div className='relative mainbody bg-white'>
 
                 <Navbar
                     setSelectedShape={setSelectedShape}
@@ -319,38 +323,45 @@ export default function Projectpage() {
                     setIsEraserActive={setIsEraserActive}
                     activeTool={activeTool}
                     setShowEditor={setShowEditor}
+                    showEditor={showEditor}
                 />
 
 
-                <div className='absolute flex flex-col gap-2 bg-amber-300 w-[40%] h-[70%] z-20 rounded-2xl top-[15%] right-0'>
+                <div className={`${showEditor ? "editbox2" : ""} editorBox absolute flex flex-col gap-3 bg-white shadow-2xl w-[40%] h-[80%] z-20 rounded-2xl top-[10%]  p-4 transition-position duration-400 ease-in-out`}>
 
-                    <div className='bg-red-200 border-2 p-1 rounded-2xl'>
+                    <div className='bg-gray-100 rounded-lg p-2'>
                         <select
                             onClick={changetoolpath}
                             name="Language"
                             id="lang-select"
                             value={selectedLang}
                             onChange={(e) => setSelectedLang(e.target.value)}
+                            className='w-full p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400'
                         >
-                            <option value="javascript">JavaScript</option>
-                            <option value="cpp">C++</option>
-                            <option value="c">C</option>
-                            <option value="java">Java</option>
-                            <option value="python">Python</option>
-                        </select>
+                            {selectedLang === "cpp" && (
+                                <option value="cpp" hidden>{selectedLang}</option>
+                            )}
+                            {
+                                langs.map((lang) => {
+                                    return (
+                                        <option value={lang}>{lang}</option>
+                                    )
+                                })
+                            }
 
+                        </select>
                     </div>
 
-                    <div className='relative w-[100%] h-[100%]'>
+                    <div className='relative w-full flex-1 rounded-lg overflow-hidden'>
                         <Editor
-                            theme='vs-dark'
+                            theme="vs-dark"
                             height="100%"
                             width="100%"
                             language={selectedLang}
-                            defaultValue="// some comment"
-                        />;
+                            defaultValue="// Start coding here..."
+                            className='rounded-lg'
+                        />
                     </div>
-
                 </div>
 
 

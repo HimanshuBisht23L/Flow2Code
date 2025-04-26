@@ -137,7 +137,12 @@
 
   
 
-/* .startpage{
-    background: transparent;
-    z-index: -1;
-} */
+  
+
+.editorBox{
+    right: -100%;
+}
+
+.editbox2{
+    right: 0;
+}
